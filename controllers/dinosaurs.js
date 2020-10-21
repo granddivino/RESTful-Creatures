@@ -1,6 +1,10 @@
-const express = require('express');
-const router = express.Router();
-const fs = require('fs');
+const express = require('express')
+const router = express.Router()
+const fs = require('fs')
+const methodOverride = require('method-override')
+
+
+router.use(methodOverride('_method'))
 
 // ----> Dino INDEX route <-----
 router.get('/', (req, res)=> {
@@ -27,11 +31,11 @@ router.get('/new', (req, res)=> {
 
 
 // ---- Dino SHOW route <----
-router.get('/:id', (req, res)=> {
+router.get('/:idx', (req, res)=> {
     let dinosaurs = fs.readFileSync('./dinosaurs.json')
     let dinoData = JSON.parse(dinosaurs)
     //Get array index from URL parameter
-    let dinoIndex = parseInt(req.params.id)
+    let dinoIndex = parseInt(req.params.idx)
     res.render('dinosaurs/show', {dino: dinoData[dinoIndex], dinoId: dinoIndex})
 })
 
@@ -46,5 +50,40 @@ router.post('/', (req,res) => {
     //Redirect to the GET /dinosaurs route (index)
     res.redirect('/dinosaurs')
 })
+
+// ----> Dino GET route <----
+router.get('/edit/:idx', (req,res)=> {
+    let dinosaurs = fs.readFileSync('./dinosaurs.json')
+    let dinoData = JSON.parse(dinosaurs)
+    res.render('dinosaurs/edit', {dino: dinoData[req.params.idx], dinoId: req.params.idx})
+})
+
+
+// ----> Dino PUT route <----
+router.put('/dinosaurs/:idx', (req,res) => {
+    let dinosaurs = fs.readFileSync('./dinosaurs.json')
+    let dinoData = JSON.parse(dinosaurs)
+    //reassign the dino's fields to be that which the user input
+    dinoData[req.params.idx].name = req.body.name
+    dinoData[req.params.idx].type = req.body.type
+    //save the edited array to the json file
+    fs.writeFileSync('./dinosaurs.json', JSON.stringify(dinoData))
+    res.redirect('/dinosaurs'+req.params.idx)
+})
+
+// ----> Dino DELETE route <----
+router.delete('/:idx', (req, res) => {
+    let dinosaurs = fs.readFileSync('./dinosaurs.json')
+    let dinoData = JSON.parse(dinosaurs)
+
+    //remove the deleted dinosaur from the dinosaurs array
+    dinoData.splice(req.params.idx, 1)
+
+    //save the new dinosaurs to the JSON file
+    fs.writeFileSync('./dinosaurs.json', JSON.stringify(dinoData))
+
+    res.redirect('/dinosaurs')
+})
+
 
 module.exports = router;

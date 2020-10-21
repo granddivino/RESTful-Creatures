@@ -19,10 +19,13 @@ app.get('/', (req, res)=> {
 const dinoControl = require('./controllers/dinosaurs')
 const creatureControl= require('./controllers/prehistoric_creatures')
 
+
 app.use('/dinosaurs', dinoControl)
 app.use('/prehistoric_creatures', creatureControl)
 
 
+
+
 app.listen(8000, ()=> {
-    console.log("Dinosaurs and Prehistoric Creatures!")
+    console.log("Dinosaurs and Prehistoric Creatures")
 })

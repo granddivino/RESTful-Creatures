@@ -1,7 +1,11 @@
 <h1>Prehistoric Creatures</h1>
 
 <ul>
-    <% creatures.forEach((creature)=> { %>
-        <li><%= creature.type %> looks like this: <img src="<%=creature.img_url %>" width=200></li>
-    <% }); %>
+<% creatures.forEach((creature, i) => { %>
+    <li><%= creature.type %> looks like this: <img src="<%=creature.img_url %>" width=200>
+    <form method= "POST" action="/prehistoric_creatures/<%= i %>/?_method=DELETE">
+        <input type="submit" value="Delete">
+    </form>
+    </li>
+<% }) %>
 </ul>
